@@ -4,6 +4,9 @@ use crossterm::{
     execute,
     terminal::{disable_raw_mode, enable_raw_mode, EnterAlternateScreen, LeaveAlternateScreen}
 };
+
+
+//ratattui -> backend to acses terminal (ya gitu lah kira kira) kode backend di line 25-42
 use ratatui::{
     backend::CrosstermBackend,
     layout::{Constraint, Direction, Layout},
@@ -22,12 +25,12 @@ pub fn menu() -> MenuResult {
     //terminal
     enable_raw_mode().unwrap();
     let mut stdout = io::stdout();
-    execute!(stdout, EnterAlternateScreen).unwrap();
+    execute!(stdout, EnterAlternateScreen).unwrap(); //buat jalanin terminal
     let backend = CrosstermBackend::new(stdout);
     let mut terminal = Terminal::new(backend).unwrap();
 
     //fisrt
-    let main_items = vec!["0. Exit", "1. Activity"];
+    let main_items = vec!["0. Exit", "1. Activity"]; //5. about add  
     let mut main_state = ListState::default();
     main_state.select(Some(1));
 
@@ -36,16 +39,16 @@ pub fn menu() -> MenuResult {
     let mut sub_state = ListState::default();
     sub_state.select(Some(0));
 
-     let mut depth: usize = 0;
+    let mut depth: usize = 0;
  
-let result = loop {
+    let result = loop {
         terminal.draw(|f| {
             let chunks = Layout::default()
                 .direction(Direction::Horizontal)
                 .constraints([Constraint::Length(25), Constraint::Min(0)])
                 .split(f.area());
  
-            // Panel kiri: menu utama
+            // kiri: menu utama
             let main_list: Vec<ListItem> = main_items
                 .iter()
                 .map(|i| ListItem::new(*i))
@@ -60,7 +63,7 @@ let result = loop {
                 .highlight_symbol("> ");
             f.render_stateful_widget(main_block, chunks[0], &mut main_state);
  
-            // Panel kanan: submenu muncul kalau activity
+            //kanan: submenu activity
             if depth == 1 {
                 let sub_list: Vec<ListItem> = sub_items
                     .iter()
@@ -76,13 +79,19 @@ let result = loop {
                     .highlight_symbol("> ");
                 f.render_stateful_widget(sub_block, chunks[1], &mut sub_state);
             }
+            else if depth == 2 {
+                
+            }
         }).unwrap();
  
-        // Handle input keyboard
+        //handle input keyboard
         if let Event::Key(key) = event::read().unwrap() {
+
+            //loop keyboard fix
             if key.kind != KeyEventKind::Press {
                 continue;
             }
+
             if depth == 0 {
                 match key.code {
                     KeyCode::Up => {
@@ -103,6 +112,7 @@ let result = loop {
                         match main_state.selected() {
                             Some(0) => break MenuResult::Exit,
                             Some(1) => depth = 1,
+                            // Some(2) => depth = 2,
                             _ => {}
                         }
                     }
@@ -128,7 +138,7 @@ let result = loop {
                         match sub_state.selected() {
                             Some(0) => break MenuResult::Add,
                             Some(1) => break MenuResult::Edit,
-                            Some(2) => depth = 0,
+                            // Some(2) => depth = 0,
                             _ => {}
                         }
                     }

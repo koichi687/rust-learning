@@ -5,6 +5,7 @@ use console::style;
 use serde::{Serialize, Deserialize};
 
 mod menu;
+mod app;
 
 #[derive(Serialize, Deserialize, Debug)]
 struct Point{
@@ -56,6 +57,9 @@ fn main(){
         menu::MenuResult::Add=>{
 
         }
+        // menu::MenuResult::About => {
+        //     return;
+        // }
     }
 
     lobby();
@@ -98,6 +102,9 @@ fn main(){
     //json extract
     let deserialized: Point = serde_json::from_str(&serialized).unwrap();
     
+
+
+    //test
 
     //json save file
 
