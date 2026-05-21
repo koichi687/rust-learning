@@ -1,4 +1,5 @@
 use std::io;
+use console::style;
 use crossterm::{
   event::{self, Event, KeyCode, KeyEventKind},
   execute,
@@ -14,6 +15,8 @@ use ratatui::{
     Terminal,
 };
 
+use crate::menu::menu;
+
 enum Focuss {
   Terminal,
   Menu,
@@ -21,7 +24,56 @@ enum Focuss {
 
 pub fn run() {
   //setup
-  enable_rawmode().unwaarp();
+  enable_raw_mode().unwrap();
   let mut stdout = io::stdout();
-  execute!(stdout, )
+  execute!(stdout,EnterAlternateScreen).unwrap();
+
+  //kiri
+  let mut input = String::new();
+  let mut output_line: Vec<String> = vec![
+    String::from("perjrec v0.1.0 - by koichi"),
+    String::from("type 'kch.test' to test"),
+    String::from(""),
+  ];
+  //terminal
+  let mut focus = Focus::Terminal;
+
+  loop {
+    terminal.draw(|f| {
+      //interface atas dan bawah
+      let vertical = Layout::default()
+      .direction(Direction::Vertical)
+      .constraints([
+        Constraint::Min(0), 
+        Constraint::Length(3)])
+      .split(f.area());
+    })
+    //atass kiri >> menu, kanan >> main
+    terminal.draw(|f| {
+      //interface atas dan bawah
+      let horizontal = Layout::default()
+      .direction(Direction::Horizontal)
+      .constraints([
+        Constraint::Min(0), 
+        Constraint::Length(20)])
+      .split(f.area());
+    })
+
+    //kiri >> menu
+    terminal.draw(|f| {
+      //interface atas dan bawah
+      let menu_list: Vec<ListItem> = menu_items
+      .iter()
+      .map(|i| ListItem::new(*i))
+      .collect();
+    let menu_style = match focus {
+      Focus::menu => Style::default().fg(color::Cyan)
+      .add_modifier(Modifier::BOLD),
+    } 
+    })
+  }
+
+  
+
+
 }
