@@ -15,7 +15,9 @@ use ratatui::{
     Terminal,
 };
 
-use crate::menu::menu;
+// use crate::app::Focus::Terminal;
+
+// use crate::menu::menu
 
 enum Focus {
   Terminal,
@@ -27,15 +29,21 @@ pub fn run() {
   enable_raw_mode().unwrap();
   let mut stdout = io::stdout();
   execute!(stdout,EnterAlternateScreen).unwrap();
+  let backend = CrosstermBackend::new(stdout);
+  let mut terminal = Terminal::new(backend).unwrap();
 
-  //kiri
+  //menu 
+  let menu_items = vec!["Exit"];
+  let mut menu_state = ListState::default();
+  menu_state.select(Some(0));
+
+  //terminal
   let mut input = String::new();
   let mut output_lines: Vec<String> = vec![
     String::from("perjrec v0.1.0 - by koichi"),
     String::from("type 'kch.test' to test"),
     String::from(""),
   ];
-  //terminal
   let mut focus = Focus::Terminal;
 
   loop {
@@ -47,7 +55,7 @@ pub fn run() {
         Constraint::Min(0), 
         Constraint::Length(3)])
       .split(f.area());
-    })
+    });
     //atass kiri >> menu, kanan >> main
     terminal.draw(|f| {
       //interface atas dan bawah
@@ -57,7 +65,7 @@ pub fn run() {
         Constraint::Min(0), 
         Constraint::Length(20)])
       .split(f.area());
-    })
+    });
 
     //kiri >> menu
     terminal.draw(|f| {
