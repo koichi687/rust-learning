@@ -1,9 +1,11 @@
+use crate::dir::{self, cmd_cd};
 use std::io;
 use crossterm::{
     event::{self, Event, KeyCode, KeyEventKind},
     execute,
     terminal::{EnterAlternateScreen, LeaveAlternateScreen, disable_raw_mode, enable_raw_mode},
 };
+
 
 //ratattui -> backend to acses terminal (ya gitu lah kira kira) kode backend di line 25-42
 use ratatui::{
@@ -20,7 +22,7 @@ pub enum MenuResult {
     Term,
 }
 
-pub fn menu() -> MenuResult {
+pub fn menuterm() -> MenuResult {
     //terminal
     enable_raw_mode().unwrap();
     let mut stdout = io::stdout();
@@ -137,9 +139,7 @@ pub fn menu() -> MenuResult {
                     KeyCode::Enter => {
                         let cmd = termin.trim().to_string();
                         termin.clear();
-                        termout.push(format!("> {}", cmd));
-                        termout.push(String::from("wrong syntax"));
-                        termout.push(String::from(" "));
+                        dir::hendler(&cmd, &mut termout);
                     }
                     KeyCode::Esc => {
                         depth = 0;
